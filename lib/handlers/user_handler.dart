@@ -33,7 +33,7 @@ class UserHandler {
 
       message.reply('Utente inserito correttamente');
 
-      _streamSubscription.cancel();
+      await _streamSubscription.cancel();
     } else {
       message.reply('Inserisci nome e cognome');
     }

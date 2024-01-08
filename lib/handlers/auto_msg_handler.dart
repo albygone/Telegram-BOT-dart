@@ -44,26 +44,31 @@ class AutoMsgHandler {
     if (text != '') {
       int id = await sendMessages(text);
 
-      _streamSubscription.cancel();
+      await _streamSubscription.cancel();
 
-      if (id != -1) getResponse(id);
+      if (id != -1) await getResponse(id);
     }
   }
 
   Future<int> sendMessages(String text) async {
     List<String> chatIdS = await userController.getChatIds();
+    int id = -1;
 
     if (chatIdS.isEmpty) {
       return -1;
     }
 
-    int id = await _messaggiRisposteController.addMessage(text);
+    try {
+      id = await _messaggiRisposteController.addMessage(text);
 
-    for (var chatId in chatIdS) {
-      if (chatId != '') {
-        _controller.sendMessage(int.parse(chatId),
-            'Messaggio Automatico: $text\nCosa ne pensi? scrivi una risposta');
+      for (var chatId in chatIdS) {
+        if (chatId != '') {
+          _controller.sendMessage(int.parse(chatId),
+              'Messaggio Automatico: $text\nCosa ne pensi? scrivi una risposta');
+        }
       }
+    } catch (e) {
+      print(e);
     }
 
     return id;

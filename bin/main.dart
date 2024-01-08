@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:main/controller/telegram_bot_controller.dart';
 import 'package:main/handlers/auto_msg_handler.dart';
 import 'package:main/handlers/bar_handler.dart';
+import 'package:main/handlers/temp_handler.dart';
 import 'package:main/handlers/user_handler.dart';
 
 Future<void> main() async {
@@ -18,6 +19,7 @@ Future<void> main() async {
   var userHandler = UserHandler(_controller);
   var autoMsgHandler = AutoMsgHandler(_controller);
   var barHandler = BarHandler(_controller);
+  var tempHandler = TempHandler(_controller);
 
   _controller.addCommandHandler('start', (message, controller) {
     message.reply('Ciao, che esercizio vuoi eseguire?',
@@ -29,7 +31,7 @@ Future<void> main() async {
             ("Esercizio 2 (Prenotazioni Bar)", "bar"),
           ],
           [
-            ("Esercizio 3 (🚧 Work in progress)", "work"),
+            ("Esercizio 3 (Temperatura)", "temp"),
           ],
           [
             ("Registrati come utente", "user"),
@@ -64,6 +66,14 @@ Future<void> main() async {
   _controller.addCallbackLikeQueryHandler('product', (inlineQuery, controller) {
     barHandler.handleResponse(inlineQuery.teledartMessage,
         int.parse(inlineQuery.data?.split('_')[1] ?? '-1'));
+  });
+
+  _controller.addCallbackLikeQueryHandler('temp', (inlineQuery, controller) {
+    tempHandler.start(inlineQuery.teledartMessage);
+  });
+
+  _controller.addCommandHandler('temp', (message, controller) {
+    tempHandler.start(message);
   });
 
   _controller.start();
