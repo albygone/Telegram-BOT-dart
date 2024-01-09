@@ -6,7 +6,7 @@ class SqlController {
   Future<void> connect() async {
     if (conn?.connected == null) {
       conn ??= await MySQLConnection.createConnection(
-        host: "albygone.it",
+        host: "albygonenet.ddns.net",
         port: 3306,
         userName: "telegram",
         password: "telegram",
